@@ -11,30 +11,28 @@ import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import co.edu.escuelaing.arws.interactiveblackboard.redis.BBApplicationContextAware;
 import co.edu.escuelaing.arws.interactiveblackboard.redis.TicketRepository;
 import co.edu.escuelaing.arws.interactiveblackboard.configurator.SpringConfigurator;
 
-@Component
 @ServerEndpoint(value = "/bbService", configurator = SpringConfigurator.class)
 public class BBEndpoint {
 
     private static final Logger logger = Logger.getLogger(BBEndpoint.class.getName());
-    /* Queue for all open WebSocket sessions */
     static Queue<Session> queue = new ConcurrentLinkedQueue<>();
 
     Session ownSession = null;
     private boolean accepted = false;
 
-    @Autowired
     private TicketRepository ticketRepo;
 
-    /* Call this method to send a message to all clients */
+    public BBEndpoint() {
+        ticketRepo = BBApplicationContextAware.getApplicationContext().getBean(TicketRepository.class);
+    }
+
     public void send(String msg) {
         try {
-            /* Send updates to all open WebSocket sessions */
             for (Session session : queue) {
                 if (!session.equals(this.ownSession)) {
                     session.getBasicRemote().sendText(msg);
@@ -66,7 +64,6 @@ public class BBEndpoint {
 
     @OnOpen
     public void openConnection(Session session) {
-        /* Register this connection in the queue */
         queue.add(session);
         ownSession = session;
         logger.log(Level.INFO, "Connection opened.");
@@ -79,14 +76,12 @@ public class BBEndpoint {
 
     @OnClose
     public void closedConnection(Session session) {
-        /* Remove this connection from the queue */
         queue.remove(session);
         logger.log(Level.INFO, "Connection closed for session " + session);
     }
 
     @OnError
     public void error(Session session, Throwable t) {
-        /* Remove this connection from the queue */
         queue.remove(session);
         logger.log(Level.INFO, t.toString());
         logger.log(Level.INFO, "Connection error.");

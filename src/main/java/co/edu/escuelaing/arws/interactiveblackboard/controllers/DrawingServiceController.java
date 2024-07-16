@@ -27,7 +27,7 @@ public class DrawingServiceController implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        List<GrantedAuthority> xd =  new ArrayList<>();
+        List<GrantedAuthority> xd = new ArrayList<>();
         xd.add(new SimpleGrantedAuthority("ROLE_USER"));
         return new MyUserPrincipal(user, new HashSet<>(xd));
     }
