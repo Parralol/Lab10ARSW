@@ -1,11 +1,9 @@
 package co.edu.escuelaing.arws.interactiveblackboard.endpoints;
 
-
-
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
@@ -13,28 +11,26 @@ import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import co.edu.escuelaing.arws.interactiveblackboard.redis.BBApplicationContextAware;
 import co.edu.escuelaing.arws.interactiveblackboard.redis.TicketRepository;
- 
+import co.edu.escuelaing.arws.interactiveblackboard.configurator.SpringConfigurator;
 
 @Component
-@ServerEndpoint("/bbService")
+@ServerEndpoint(value = "/bbService", configurator = SpringConfigurator.class)
 public class BBEndpoint {
- 
 
     private static final Logger logger = Logger.getLogger(BBEndpoint.class.getName());
     /* Queue for all open WebSocket sessions */
     static Queue<Session> queue = new ConcurrentLinkedQueue<>();
- 
+
     Session ownSession = null;
     private boolean accepted = false;
-    //This code allows to include a bean directly from the application context
-    TicketRepository ticketRepo = 
-            (TicketRepository) 
-            BBApplicationContextAware.getApplicationContext().getBean("ticketRepository");
- 
+
+    @Autowired
+    private TicketRepository ticketRepo;
+
     /* Call this method to send a message to all clients */
     public void send(String msg) {
         try {
@@ -49,7 +45,7 @@ public class BBEndpoint {
             logger.log(Level.INFO, e.toString());
         }
     }
- 
+
     @OnMessage
     public void processPoint(String message, Session session) {
         logger.log(Level.INFO, "Ticket/Point: " + message + ".Session: " + session);
@@ -58,16 +54,16 @@ public class BBEndpoint {
         } else {
             if (!accepted && ticketRepo.checkTicket(message)) {
                 accepted = true;
-            }else{
+            } else {
                 try {
                     ownSession.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(BBEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, null, ex);
                 }
             }
         }
     }
- 
+
     @OnOpen
     public void openConnection(Session session) {
         /* Register this connection in the queue */
@@ -80,7 +76,6 @@ public class BBEndpoint {
             logger.log(Level.SEVERE, null, ex);
         }
     }
- 
 
     @OnClose
     public void closedConnection(Session session) {
@@ -88,7 +83,6 @@ public class BBEndpoint {
         queue.remove(session);
         logger.log(Level.INFO, "Connection closed for session " + session);
     }
- 
 
     @OnError
     public void error(Session session, Throwable t) {
