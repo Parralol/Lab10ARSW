@@ -11,15 +11,15 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 @PropertySource("application.properties")
 public class RedisConfig {
 
- @Value("${redis.bbcache.hostname}")
- private String redisHostName;
- @Value("${redis.bbcache.port}")
- private int redisPort;
+    @Value("${redis.bbcache.hostname}")
+    private String redisHostName;
+    @Value("${redis.bbcache.port}")
+    private int redisPort;
 
- @Bean
- public LettuceConnectionFactory redisConnectionFactory() {
- LettuceConnectionFactory connectionFactory =
- new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHostName, redisPort));
- return connectionFactory;
- }
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory(
+                new RedisStandaloneConfiguration(redisHostName, redisPort));
+        return connectionFactory;
+    }
 }
