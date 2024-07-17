@@ -1,10 +1,12 @@
 package co.edu.escuelaing.arws.interactiveblackboard.entity;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("users")
-public class User {
+public class User implements Serializable{
     @Id
     public String name;
 
