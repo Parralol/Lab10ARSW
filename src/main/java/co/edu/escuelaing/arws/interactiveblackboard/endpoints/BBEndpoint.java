@@ -5,17 +5,21 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.springframework.stereotype.Component;
+
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
-
-import co.edu.escuelaing.arws.interactiveblackboard.redis.BBApplicationContextAware;
+import co.edu.escuelaing.arws.interactiveblackboard.configurator.SpringConfigurator;
+import org.springframework.beans.factory.annotation.Autowired;
 import co.edu.escuelaing.arws.interactiveblackboard.redis.TicketRepository;
 
-@ServerEndpoint(value = "/bbService")
+@Component
+@ServerEndpoint(value = "/bbService", configurator = SpringConfigurator.class)
 public class BBEndpoint {
 
     private static final Logger logger = Logger.getLogger(BBEndpoint.class.getName());
@@ -24,11 +28,10 @@ public class BBEndpoint {
     Session ownSession = null;
     private boolean accepted = false;
 
-    private TicketRepository ticketRepo = BBApplicationContextAware.getApplicationContext().getBean(TicketRepository.class);;
+    @Autowired
+    private TicketRepository ticketRepo;
 
-    public BBEndpoint() {
-        ticketRepo = BBApplicationContextAware.getApplicationContext().getBean(TicketRepository.class);
-    }
+
 
     public void send(String msg) {
         try {

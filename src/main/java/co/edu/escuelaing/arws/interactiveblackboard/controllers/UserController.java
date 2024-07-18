@@ -5,10 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import co.edu.escuelaing.arws.interactiveblackboard.entity.User;
-import co.edu.escuelaing.arws.interactiveblackboard.redis.TicketRepository;
+
 import co.edu.escuelaing.arws.interactiveblackboard.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,9 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    TicketRepository ticketRepo;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -46,12 +42,6 @@ public class UserController {
         System.out.println("Successfully created" + usern + " USER WITH " + encodedPassword + "PASSWORD");
 
         return "home";
-    }
-
-    @GetMapping("/getticket")
-    public String getTicket() {
-        return "{\"ticket\":\"" +
-                ticketRepo.getTicket() + "\"}";
     }
 
 }
