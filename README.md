@@ -1,6 +1,6 @@
 # Lab10ARSW
 
-This programm allow multiple users to draw in a board using realtime securely
+This programm allow multiple users to draw in a board using realtime securely and using REDIS
 2024/07/09
 
 
@@ -47,9 +47,7 @@ mvn clean package
 
 ### Acceptance test
 
-
-
-https://github.com/user-attachments/assets/15ba9505-4d21-41a0-9aca-b5edbc2b59f4
+https://github.com/user-attachments/assets/d642b262-7e48-449e-9f46-3e13bd1807ef
 
 
 ## Generating javadoc
