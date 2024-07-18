@@ -1,6 +1,7 @@
 package co.edu.escuelaing.arws.interactiveblackboard.configurator;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
@@ -10,4 +11,5 @@ public class BBConfigurator {
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
+
 }

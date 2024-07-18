@@ -13,12 +13,12 @@ public class BBApplicationContextAware implements ApplicationContextAware {
     private static ApplicationContext APPLICATION_CONTEXT;
 
 
+    public static ApplicationContext getApplicationContext() {
+        return APPLICATION_CONTEXT;
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         APPLICATION_CONTEXT = applicationContext;
-    }
-
-    public static ApplicationContext getApplicationContext() {
-        return APPLICATION_CONTEXT;
     }
 }

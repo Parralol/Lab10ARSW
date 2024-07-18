@@ -14,9 +14,8 @@ import jakarta.websocket.server.ServerEndpoint;
 
 import co.edu.escuelaing.arws.interactiveblackboard.redis.BBApplicationContextAware;
 import co.edu.escuelaing.arws.interactiveblackboard.redis.TicketRepository;
-import co.edu.escuelaing.arws.interactiveblackboard.configurator.SpringConfigurator;
 
-@ServerEndpoint(value = "/bbService", configurator = SpringConfigurator.class)
+@ServerEndpoint(value = "/bbService")
 public class BBEndpoint {
 
     private static final Logger logger = Logger.getLogger(BBEndpoint.class.getName());
@@ -25,7 +24,7 @@ public class BBEndpoint {
     Session ownSession = null;
     private boolean accepted = false;
 
-    private TicketRepository ticketRepo;
+    private TicketRepository ticketRepo = BBApplicationContextAware.getApplicationContext().getBean(TicketRepository.class);;
 
     public BBEndpoint() {
         ticketRepo = BBApplicationContextAware.getApplicationContext().getBean(TicketRepository.class);
