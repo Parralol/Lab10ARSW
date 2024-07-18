@@ -16,10 +16,13 @@ import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import co.edu.escuelaing.arws.interactiveblackboard.configurator.SpringConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import co.edu.escuelaing.arws.interactiveblackboard.redis.TicketRepository;
 
 @Component
 @ServerEndpoint(value = "/bbService", configurator = SpringConfigurator.class)
+@Configurable(preConstruction = true)
 public class BBEndpoint {
 
     private static final Logger logger = Logger.getLogger(BBEndpoint.class.getName());
@@ -30,8 +33,6 @@ public class BBEndpoint {
 
     @Autowired
     private TicketRepository ticketRepo;
-
-
 
     public void send(String msg) {
         try {
@@ -53,9 +54,11 @@ public class BBEndpoint {
             this.send(message);
         } else {
             if (!accepted && ticketRepo.checkTicket(message)) {
+                System.out.println("pto valido");
                 accepted = true;
             } else {
                 try {
+                    System.out.println("pto NO valido");
                     ownSession.close();
                 } catch (IOException ex) {
                     logger.log(Level.SEVERE, null, ex);
